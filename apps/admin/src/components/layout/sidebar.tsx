@@ -13,10 +13,10 @@ import {
   CreditCard,
   Bell,
   Settings,
+  School,
   Building2,
   Sliders,
   ShieldCheck,
-  ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -53,46 +53,26 @@ export function Sidebar({ isSuperAdmin = false }: { isSuperAdmin?: boolean }) {
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 shrink-0 min-h-screen">
-      {/* Brand Header */}
-      <div className="p-6 border-b border-slate-800 flex items-center space-x-3">
-        <div className="h-9 w-9 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-md">
-          SIS
+      {/* Brand Header: School Name */}
+      <div className="p-5 border-b border-slate-800 flex items-center space-x-3">
+        <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg ring-2 ring-blue-500/20">
+          <School className="h-5 w-5" />
         </div>
-        <div>
-          <h1 className="font-bold text-sm leading-tight text-white tracking-wide">SIS SMART SCHOOL</h1>
-          <p className="text-xs text-slate-400">
-            {isSuperAdmin ? 'Platform Super Admin' : 'School Management'}
+        <div className="min-w-0 flex-1">
+          <h1 className="font-bold text-sm leading-tight text-white truncate tracking-wide">
+            SAS Smart School
+          </h1>
+          <p className="text-[11px] text-blue-400 font-medium">
+            Smart School Dashboard
           </p>
         </div>
       </div>
 
-      {/* Navigation Switcher Tab */}
-      <div className="px-4 py-3 bg-slate-950/50 border-b border-slate-800/80 flex items-center justify-between text-xs">
-        <span className="text-slate-400 font-medium">Mode:</span>
-        <div className="flex space-x-2">
-          <Link
-            href="/dashboard"
-            className={cn(
-              'px-2 py-1 rounded text-xs font-semibold transition',
-              !isSuperAdmin ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
-            )}
-          >
-            School
-          </Link>
-          <Link
-            href="/super-admin/dashboard"
-            className={cn(
-              'px-2 py-1 rounded text-xs font-semibold transition',
-              isSuperAdmin ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white'
-            )}
-          >
-            Super Admin
-          </Link>
-        </div>
-      </div>
-
       {/* Navigation List */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+        <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          School Management
+        </div>
         {items.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
           const Icon = item.icon;
@@ -122,32 +102,20 @@ export function Sidebar({ isSuperAdmin = false }: { isSuperAdmin?: boolean }) {
       </nav>
 
       {/* Tenant Context Footer */}
-      {!isSuperAdmin && (
-        <div className="p-4 border-t border-slate-800 bg-slate-950/40">
-          <div className="flex items-center space-x-3">
-            <div className="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-blue-400">
-              DMS
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-slate-200 truncate">Dhaka Model School</p>
-              <p className="text-[10px] text-green-400 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-400 inline-block animate-pulse" />
-                Session 2026 (Active)
-              </p>
-            </div>
+      <div className="p-4 border-t border-slate-800 bg-slate-950/60">
+        <div className="flex items-center space-x-3">
+          <div className="h-8 w-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs font-bold border border-blue-500/30">
+            SAS
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-slate-200 truncate">SAS Smart School</p>
+            <p className="text-[10px] text-emerald-400 flex items-center gap-1.5 font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
+              Academic Session 2026
+            </p>
           </div>
         </div>
-      )}
-
-      {isSuperAdmin && (
-        <div className="p-4 border-t border-slate-800 bg-amber-950/20">
-          <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold">
-            <ShieldCheck className="h-4 w-4" />
-            <span>Remote Command Center</span>
-          </div>
-          <p className="text-[10px] text-slate-400 mt-1">Full Server-Driven UI Control</p>
-        </div>
-      )}
+      </div>
     </aside>
   );
 }

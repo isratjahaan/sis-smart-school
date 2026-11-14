@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import { Award, Search, CheckCircle, FileText, Printer, ArrowRight } from 'lucide-react';
 
 export function ResultCheckerSection() {
-  const [studentId, setStudentId] = useState('DMS-2026-001');
+  const [studentId, setStudentId] = useState('SAS-2026-001');
   const [examName, setExamName] = useState('First Term Examination 2026');
   const [result, setResult] = useState<any>(null);
   const [searched, setSearched] = useState(false);
 
   const sampleResults: Record<string, any> = {
-    'DMS-2026-001': {
+    'SAS-2026-001': {
       studentName: 'Tahmid Rahman',
       roll: 1,
       class: 'Class 10 (Section A)',
@@ -24,7 +24,7 @@ export function ResultCheckerSection() {
         { name: 'General Science', marks: 91, grade: 'A+', point: '5.00' },
       ],
     },
-    'DMS-2026-002': {
+    'SAS-2026-002': {
       studentName: 'Samia Chowdhury',
       roll: 2,
       class: 'Class 10 (Section A)',
@@ -64,7 +64,7 @@ export function ResultCheckerSection() {
             <input
               type="text"
               required
-              placeholder="e.g. DMS-2026-001"
+              placeholder="e.g. SAS-2026-001"
               className="w-full h-12 bg-slate-900 rounded-xl px-4 text-sm font-mono text-white placeholder:text-slate-500 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}

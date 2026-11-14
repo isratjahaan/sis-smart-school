@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'SIS Smart School — Enterprise Multi-Tenant Administration Ecosystem',
-  description: 'Centralized Multi-Tenant SaaS School Information System',
+  title: 'Smart School Management Dashboard',
+  description: 'Complete School Information & Management System',
 };
 
 export default function RootLayout({

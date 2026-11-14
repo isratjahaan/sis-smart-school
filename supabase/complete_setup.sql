@@ -13,7 +13,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ------------------------------------------------------------------------------
 -- 1. SUBSCRIPTION PLANS
 -- ------------------------------------------------------------------------------
-CREATE TABLE subscription_plans (
+CREATE TABLE IF NOT EXISTS subscription_plans (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
@@ -32,7 +32,7 @@ CREATE TABLE subscription_plans (
 -- ------------------------------------------------------------------------------
 -- 2. SCHOOLS (TENANTS)
 -- ------------------------------------------------------------------------------
-CREATE TABLE schools (
+CREATE TABLE IF NOT EXISTS schools (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(100) NOT NULL UNIQUE,
@@ -53,13 +53,13 @@ CREATE TABLE schools (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_schools_slug ON schools(slug);
-CREATE INDEX idx_schools_status ON schools(status);
+CREATE INDEX IF NOT EXISTS idx_schools_slug ON schools(slug);
+CREATE INDEX IF NOT EXISTS idx_schools_status ON schools(status);
 
 -- ------------------------------------------------------------------------------
 -- 3. SCHOOL DOMAINS
 -- ------------------------------------------------------------------------------
-CREATE TABLE school_domains (
+CREATE TABLE IF NOT EXISTS school_domains (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     domain VARCHAR(255) NOT NULL UNIQUE,
@@ -70,13 +70,13 @@ CREATE TABLE school_domains (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_school_domains_school_id ON school_domains(school_id);
-CREATE INDEX idx_school_domains_domain ON school_domains(domain);
+CREATE INDEX IF NOT EXISTS idx_school_domains_school_id ON school_domains(school_id);
+CREATE INDEX IF NOT EXISTS idx_school_domains_domain ON school_domains(domain);
 
 -- ------------------------------------------------------------------------------
 -- 4. SCHOOL SUBSCRIPTIONS
 -- ------------------------------------------------------------------------------
-CREATE TABLE school_subscriptions (
+CREATE TABLE IF NOT EXISTS school_subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     plan_id UUID NOT NULL REFERENCES subscription_plans(id),
@@ -90,12 +90,12 @@ CREATE TABLE school_subscriptions (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_school_subscriptions_school_id ON school_subscriptions(school_id);
+CREATE INDEX IF NOT EXISTS idx_school_subscriptions_school_id ON school_subscriptions(school_id);
 
 -- ------------------------------------------------------------------------------
 -- 5. SCHOOL SETTINGS & BRANDING
 -- ------------------------------------------------------------------------------
-CREATE TABLE school_settings (
+CREATE TABLE IF NOT EXISTS school_settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL UNIQUE REFERENCES schools(id) ON DELETE CASCADE,
     timezone VARCHAR(100) NOT NULL DEFAULT 'Asia/Dhaka',
@@ -120,7 +120,7 @@ CREATE TABLE school_settings (
 -- ------------------------------------------------------------------------------
 -- 6. PLATFORM SETTINGS & GLOBAL CONFIGURATION
 -- ------------------------------------------------------------------------------
-CREATE TABLE platform_settings (
+CREATE TABLE IF NOT EXISTS platform_settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     app_name VARCHAR(150) NOT NULL DEFAULT 'SIS Smart School',
     logo_url TEXT,
@@ -145,7 +145,7 @@ CREATE TABLE platform_settings (
 -- ------------------------------------------------------------------------------
 -- 7. CENTRALIZED FEATURE FLAGS (PLATFORM & TENANT)
 -- ------------------------------------------------------------------------------
-CREATE TABLE feature_flags (
+CREATE TABLE IF NOT EXISTS feature_flags (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID REFERENCES schools(id) ON DELETE CASCADE, -- NULL means Global platform default
     attendance_enabled BOOLEAN NOT NULL DEFAULT true,
@@ -167,7 +167,7 @@ CREATE TABLE feature_flags (
 -- ------------------------------------------------------------------------------
 -- 8. SERVER-DRIVEN UI CONFIGURATION & VERSIONING
 -- ------------------------------------------------------------------------------
-CREATE TABLE configuration_versions (
+CREATE TABLE IF NOT EXISTS configuration_versions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID REFERENCES schools(id) ON DELETE CASCADE, -- NULL = Global Platform Template
     config_type VARCHAR(50) NOT NULL CHECK (config_type IN ('screen_layout', 'navigation', 'feature_flags', 'branding', 'global')),
@@ -181,12 +181,12 @@ CREATE TABLE configuration_versions (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_config_versions_lookup ON configuration_versions(school_id, config_type, screen_id, is_published);
+CREATE INDEX IF NOT EXISTS idx_config_versions_lookup ON configuration_versions(school_id, config_type, screen_id, is_published);
 
 -- ------------------------------------------------------------------------------
 -- 9. AUDIT LOGGING FOR CONFIGURATIONS & PLATFORM
 -- ------------------------------------------------------------------------------
-CREATE TABLE configuration_audit_logs (
+CREATE TABLE IF NOT EXISTS configuration_audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID REFERENCES schools(id) ON DELETE SET NULL,
     actor_id UUID,
@@ -201,8 +201,8 @@ CREATE TABLE configuration_audit_logs (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_config_audit_school_id ON configuration_audit_logs(school_id);
-CREATE INDEX idx_config_audit_created_at ON configuration_audit_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_config_audit_school_id ON configuration_audit_logs(school_id);
+CREATE INDEX IF NOT EXISTS idx_config_audit_created_at ON configuration_audit_logs(created_at DESC);
 
 
 -- ==============================================================================
@@ -217,7 +217,7 @@ CREATE INDEX idx_config_audit_created_at ON configuration_audit_logs(created_at 
 -- ------------------------------------------------------------------------------
 -- 1. USER PROFILES
 -- ------------------------------------------------------------------------------
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email VARCHAR(255) NOT NULL UNIQUE,
     first_name VARCHAR(100) NOT NULL,
@@ -232,13 +232,13 @@ CREATE TABLE profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_profiles_email ON profiles(email);
-CREATE INDEX idx_profiles_status ON profiles(status);
+CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
+CREATE INDEX IF NOT EXISTS idx_profiles_status ON profiles(status);
 
 -- ------------------------------------------------------------------------------
 -- 2. PLATFORM SUPER ADMINS
 -- ------------------------------------------------------------------------------
-CREATE TABLE platform_admins (
+CREATE TABLE IF NOT EXISTS platform_admins (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
     is_active BOOLEAN NOT NULL DEFAULT true,
@@ -249,7 +249,7 @@ CREATE TABLE platform_admins (
 -- ------------------------------------------------------------------------------
 -- 3. PERMISSIONS TABLE
 -- ------------------------------------------------------------------------------
-CREATE TABLE permissions (
+CREATE TABLE IF NOT EXISTS permissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(150) NOT NULL,
@@ -261,7 +261,7 @@ CREATE TABLE permissions (
 -- ------------------------------------------------------------------------------
 -- 4. USER SCHOOL MEMBERSHIPS (MULTI-TENANT RBAC)
 -- ------------------------------------------------------------------------------
-CREATE TABLE user_school_memberships (
+CREATE TABLE IF NOT EXISTS user_school_memberships (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
@@ -282,13 +282,13 @@ CREATE TABLE user_school_memberships (
     CONSTRAINT uq_user_school_membership UNIQUE (user_id, school_id, role)
 );
 
-CREATE INDEX idx_user_school_memberships_lookup ON user_school_memberships(user_id, school_id, is_active);
-CREATE INDEX idx_user_school_memberships_school ON user_school_memberships(school_id);
+CREATE INDEX IF NOT EXISTS idx_user_school_memberships_lookup ON user_school_memberships(user_id, school_id, is_active);
+CREATE INDEX IF NOT EXISTS idx_user_school_memberships_school ON user_school_memberships(school_id);
 
 -- ------------------------------------------------------------------------------
 -- 5. ROLE PERMISSIONS
 -- ------------------------------------------------------------------------------
-CREATE TABLE role_permissions (
+CREATE TABLE IF NOT EXISTS role_permissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID REFERENCES schools(id) ON DELETE CASCADE, -- NULL = System default role permissions
     role VARCHAR(50) NOT NULL,
@@ -414,7 +414,7 @@ CREATE TRIGGER on_auth_user_created
 -- ------------------------------------------------------------------------------
 -- 1. ACADEMIC SESSIONS
 -- ------------------------------------------------------------------------------
-CREATE TABLE academic_sessions (
+CREATE TABLE IF NOT EXISTS academic_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL, -- e.g. "2026" or "2026-2027"
@@ -426,12 +426,12 @@ CREATE TABLE academic_sessions (
     CONSTRAINT uq_school_session UNIQUE (school_id, name)
 );
 
-CREATE INDEX idx_academic_sessions_school ON academic_sessions(school_id, is_current);
+CREATE INDEX IF NOT EXISTS idx_academic_sessions_school ON academic_sessions(school_id, is_current);
 
 -- ------------------------------------------------------------------------------
 -- 2. CLASSES & SECTIONS
 -- ------------------------------------------------------------------------------
-CREATE TABLE classes (
+CREATE TABLE IF NOT EXISTS classes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL, -- e.g. "Class 6", "Class 10"
@@ -442,9 +442,9 @@ CREATE TABLE classes (
     CONSTRAINT uq_school_class_name UNIQUE (school_id, name)
 );
 
-CREATE INDEX idx_classes_school ON classes(school_id, numeric_grade);
+CREATE INDEX IF NOT EXISTS idx_classes_school ON classes(school_id, numeric_grade);
 
-CREATE TABLE sections (
+CREATE TABLE IF NOT EXISTS sections (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     class_id UUID NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
@@ -456,9 +456,9 @@ CREATE TABLE sections (
     CONSTRAINT uq_class_section UNIQUE (class_id, name)
 );
 
-CREATE INDEX idx_sections_class ON sections(class_id);
+CREATE INDEX IF NOT EXISTS idx_sections_class ON sections(class_id);
 
-CREATE TABLE groups (
+CREATE TABLE IF NOT EXISTS groups (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL, -- "Science", "Commerce", "Humanities", "General"
@@ -471,7 +471,7 @@ CREATE TABLE groups (
 -- ------------------------------------------------------------------------------
 -- 3. SUBJECTS & CLASS SUBJECTS
 -- ------------------------------------------------------------------------------
-CREATE TABLE subjects (
+CREATE TABLE IF NOT EXISTS subjects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     name VARCHAR(150) NOT NULL,
@@ -484,9 +484,9 @@ CREATE TABLE subjects (
     CONSTRAINT uq_school_subject_code UNIQUE (school_id, code)
 );
 
-CREATE INDEX idx_subjects_school ON subjects(school_id);
+CREATE INDEX IF NOT EXISTS idx_subjects_school ON subjects(school_id);
 
-CREATE TABLE class_subjects (
+CREATE TABLE IF NOT EXISTS class_subjects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     class_id UUID NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
@@ -498,12 +498,12 @@ CREATE TABLE class_subjects (
     CONSTRAINT uq_class_subject UNIQUE (class_id, subject_id)
 );
 
-CREATE INDEX idx_class_subjects_class ON class_subjects(class_id);
+CREATE INDEX IF NOT EXISTS idx_class_subjects_class ON class_subjects(class_id);
 
 -- ------------------------------------------------------------------------------
 -- 4. TEACHERS & TEACHER ASSIGNMENTS
 -- ------------------------------------------------------------------------------
-CREATE TABLE teachers (
+CREATE TABLE IF NOT EXISTS teachers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -527,9 +527,9 @@ CREATE TABLE teachers (
     CONSTRAINT uq_school_teacher_id UNIQUE (school_id, teacher_id_number)
 );
 
-CREATE INDEX idx_teachers_school ON teachers(school_id, status);
+CREATE INDEX IF NOT EXISTS idx_teachers_school ON teachers(school_id, status);
 
-CREATE TABLE teacher_assignments (
+CREATE TABLE IF NOT EXISTS teacher_assignments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     teacher_id UUID NOT NULL REFERENCES teachers(id) ON DELETE CASCADE,
@@ -542,12 +542,12 @@ CREATE TABLE teacher_assignments (
     CONSTRAINT uq_teacher_assignment UNIQUE (teacher_id, class_id, section_id, subject_id, academic_session_id)
 );
 
-CREATE INDEX idx_teacher_assignments_lookup ON teacher_assignments(teacher_id, academic_session_id);
+CREATE INDEX IF NOT EXISTS idx_teacher_assignments_lookup ON teacher_assignments(teacher_id, academic_session_id);
 
 -- ------------------------------------------------------------------------------
 -- 5. CLASS ROUTINES (TIMETABLE)
 -- ------------------------------------------------------------------------------
-CREATE TABLE class_routines (
+CREATE TABLE IF NOT EXISTS class_routines (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     academic_session_id UUID NOT NULL REFERENCES academic_sessions(id) ON DELETE CASCADE,
@@ -563,12 +563,12 @@ CREATE TABLE class_routines (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_class_routines_lookup ON class_routines(school_id, class_id, section_id, day_of_week);
+CREATE INDEX IF NOT EXISTS idx_class_routines_lookup ON class_routines(school_id, class_id, section_id, day_of_week);
 
 -- ------------------------------------------------------------------------------
 -- 6. STUDENTS & PARENTS
 -- ------------------------------------------------------------------------------
-CREATE TABLE students (
+CREATE TABLE IF NOT EXISTS students (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -592,9 +592,9 @@ CREATE TABLE students (
     CONSTRAINT uq_school_student_id UNIQUE (school_id, student_id_number)
 );
 
-CREATE INDEX idx_students_school ON students(school_id, status);
+CREATE INDEX IF NOT EXISTS idx_students_school ON students(school_id, status);
 
-CREATE TABLE student_enrollments (
+CREATE TABLE IF NOT EXISTS student_enrollments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     student_id UUID NOT NULL REFERENCES students(id) ON DELETE CASCADE,
@@ -610,10 +610,10 @@ CREATE TABLE student_enrollments (
     CONSTRAINT uq_student_session UNIQUE (student_id, academic_session_id)
 );
 
-CREATE INDEX idx_enrollments_lookup ON student_enrollments(academic_session_id, class_id, section_id, is_active);
-CREATE INDEX idx_enrollments_student ON student_enrollments(student_id);
+CREATE INDEX IF NOT EXISTS idx_enrollments_lookup ON student_enrollments(academic_session_id, class_id, section_id, is_active);
+CREATE INDEX IF NOT EXISTS idx_enrollments_student ON student_enrollments(student_id);
 
-CREATE TABLE parents (
+CREATE TABLE IF NOT EXISTS parents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -630,9 +630,9 @@ CREATE TABLE parents (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_parents_school ON parents(school_id);
+CREATE INDEX IF NOT EXISTS idx_parents_school ON parents(school_id);
 
-CREATE TABLE parent_student_relationships (
+CREATE TABLE IF NOT EXISTS parent_student_relationships (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     parent_id UUID NOT NULL REFERENCES parents(id) ON DELETE CASCADE,
@@ -643,9 +643,9 @@ CREATE TABLE parent_student_relationships (
     CONSTRAINT uq_parent_student UNIQUE (parent_id, student_id)
 );
 
-CREATE INDEX idx_parent_student_lookup ON parent_student_relationships(parent_id, student_id);
+CREATE INDEX IF NOT EXISTS idx_parent_student_lookup ON parent_student_relationships(parent_id, student_id);
 
-CREATE TABLE student_documents (
+CREATE TABLE IF NOT EXISTS student_documents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     student_id UUID NOT NULL REFERENCES students(id) ON DELETE CASCADE,
@@ -657,7 +657,7 @@ CREATE TABLE student_documents (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_student_documents ON student_documents(student_id);
+CREATE INDEX IF NOT EXISTS idx_student_documents ON student_documents(student_id);
 
 
 -- ==============================================================================
@@ -672,7 +672,7 @@ CREATE INDEX idx_student_documents ON student_documents(student_id);
 -- ------------------------------------------------------------------------------
 -- 1. ATTENDANCE TABLES
 -- ------------------------------------------------------------------------------
-CREATE TABLE student_attendance (
+CREATE TABLE IF NOT EXISTS student_attendance (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     student_id UUID NOT NULL REFERENCES students(id) ON DELETE CASCADE,
@@ -689,10 +689,10 @@ CREATE TABLE student_attendance (
     CONSTRAINT uq_student_attendance_date UNIQUE (student_id, date)
 );
 
-CREATE INDEX idx_student_attendance_lookup ON student_attendance(school_id, class_id, section_id, date);
-CREATE INDEX idx_student_attendance_student ON student_attendance(student_id, date);
+CREATE INDEX IF NOT EXISTS idx_student_attendance_lookup ON student_attendance(school_id, class_id, section_id, date);
+CREATE INDEX IF NOT EXISTS idx_student_attendance_student ON student_attendance(student_id, date);
 
-CREATE TABLE teacher_attendance (
+CREATE TABLE IF NOT EXISTS teacher_attendance (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     teacher_id UUID NOT NULL REFERENCES teachers(id) ON DELETE CASCADE,
@@ -706,12 +706,12 @@ CREATE TABLE teacher_attendance (
     CONSTRAINT uq_teacher_attendance_date UNIQUE (teacher_id, date)
 );
 
-CREATE INDEX idx_teacher_attendance_lookup ON teacher_attendance(school_id, date);
+CREATE INDEX IF NOT EXISTS idx_teacher_attendance_lookup ON teacher_attendance(school_id, date);
 
 -- ------------------------------------------------------------------------------
 -- 2. GRADING SCALES (BANGLADESH NATIONAL BOARD & CUSTOM SCHOOL SCALES)
 -- ------------------------------------------------------------------------------
-CREATE TABLE grading_scales (
+CREATE TABLE IF NOT EXISTS grading_scales (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID REFERENCES schools(id) ON DELETE CASCADE, -- NULL = System default scale
     name VARCHAR(100) NOT NULL,
@@ -727,7 +727,7 @@ CREATE TABLE grading_scales (
 -- ------------------------------------------------------------------------------
 -- 3. EXAMINATIONS & SUBJECTS
 -- ------------------------------------------------------------------------------
-CREATE TABLE examinations (
+CREATE TABLE IF NOT EXISTS examinations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     academic_session_id UUID NOT NULL REFERENCES academic_sessions(id) ON DELETE CASCADE,
@@ -741,9 +741,9 @@ CREATE TABLE examinations (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_examinations_school ON examinations(school_id, academic_session_id);
+CREATE INDEX IF NOT EXISTS idx_examinations_school ON examinations(school_id, academic_session_id);
 
-CREATE TABLE examination_subjects (
+CREATE TABLE IF NOT EXISTS examination_subjects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     examination_id UUID NOT NULL REFERENCES examinations(id) ON DELETE CASCADE,
@@ -761,7 +761,7 @@ CREATE TABLE examination_subjects (
 -- ------------------------------------------------------------------------------
 -- 4. STUDENT MARKS & AUTOMATED GRADING
 -- ------------------------------------------------------------------------------
-CREATE TABLE student_marks (
+CREATE TABLE IF NOT EXISTS student_marks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     examination_id UUID NOT NULL REFERENCES examinations(id) ON DELETE CASCADE,
@@ -780,7 +780,7 @@ CREATE TABLE student_marks (
     CONSTRAINT uq_student_exam_subject_mark UNIQUE (examination_id, student_id, subject_id)
 );
 
-CREATE INDEX idx_student_marks_lookup ON student_marks(examination_id, student_id);
+CREATE INDEX IF NOT EXISTS idx_student_marks_lookup ON student_marks(examination_id, student_id);
 
 -- Stored Procedure to compute grade name and point from mark
 CREATE OR REPLACE FUNCTION public.fn_calculate_grade(
@@ -852,7 +852,7 @@ CREATE TRIGGER on_student_marks_save
 -- ------------------------------------------------------------------------------
 -- 5. REPORT CARDS & CUMULATIVE GPA ENGINE
 -- ------------------------------------------------------------------------------
-CREATE TABLE report_cards (
+CREATE TABLE IF NOT EXISTS report_cards (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     examination_id UUID NOT NULL REFERENCES examinations(id) ON DELETE CASCADE,
@@ -874,8 +874,8 @@ CREATE TABLE report_cards (
     CONSTRAINT uq_report_card_student_exam UNIQUE (examination_id, student_id)
 );
 
-CREATE INDEX idx_report_cards_lookup ON report_cards(examination_id, class_id, section_id);
-CREATE INDEX idx_report_cards_student ON report_cards(student_id);
+CREATE INDEX IF NOT EXISTS idx_report_cards_lookup ON report_cards(examination_id, class_id, section_id);
+CREATE INDEX IF NOT EXISTS idx_report_cards_student ON report_cards(student_id);
 
 -- Stored Procedure to generate or recalculate student report card
 CREATE OR REPLACE FUNCTION public.fn_generate_student_report_card(
@@ -999,7 +999,7 @@ $$ LANGUAGE plpgsql;
 -- ------------------------------------------------------------------------------
 -- 1. FEES & INVOICING
 -- ------------------------------------------------------------------------------
-CREATE TABLE fee_categories (
+CREATE TABLE IF NOT EXISTS fee_categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     name VARCHAR(150) NOT NULL,
@@ -1009,7 +1009,7 @@ CREATE TABLE fee_categories (
     CONSTRAINT uq_school_fee_category UNIQUE (school_id, name)
 );
 
-CREATE TABLE fee_structures (
+CREATE TABLE IF NOT EXISTS fee_structures (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     academic_session_id UUID NOT NULL REFERENCES academic_sessions(id) ON DELETE CASCADE,
@@ -1022,7 +1022,7 @@ CREATE TABLE fee_structures (
     CONSTRAINT uq_class_fee_structure UNIQUE (academic_session_id, class_id, fee_category_id)
 );
 
-CREATE TABLE student_invoices (
+CREATE TABLE IF NOT EXISTS student_invoices (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     invoice_number VARCHAR(50) NOT NULL,
@@ -1042,9 +1042,9 @@ CREATE TABLE student_invoices (
     CONSTRAINT uq_school_invoice_number UNIQUE (school_id, invoice_number)
 );
 
-CREATE INDEX idx_student_invoices_lookup ON student_invoices(school_id, student_id, status);
+CREATE INDEX IF NOT EXISTS idx_student_invoices_lookup ON student_invoices(school_id, student_id, status);
 
-CREATE TABLE payment_transactions (
+CREATE TABLE IF NOT EXISTS payment_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     invoice_id UUID NOT NULL REFERENCES student_invoices(id) ON DELETE CASCADE,
@@ -1100,7 +1100,7 @@ CREATE TRIGGER on_payment_saved
     AFTER INSERT OR UPDATE ON payment_transactions
     FOR EACH ROW EXECUTE FUNCTION public.trg_sync_invoice_payments();
 
-CREATE TABLE expenses (
+CREATE TABLE IF NOT EXISTS expenses (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     title VARCHAR(150) NOT NULL,
@@ -1115,12 +1115,12 @@ CREATE TABLE expenses (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_expenses_school ON expenses(school_id, expense_date);
+CREATE INDEX IF NOT EXISTS idx_expenses_school ON expenses(school_id, expense_date);
 
 -- ------------------------------------------------------------------------------
 -- 2. NOTICES & ANNOUNCEMENTS
 -- ------------------------------------------------------------------------------
-CREATE TABLE notices (
+CREATE TABLE IF NOT EXISTS notices (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
@@ -1136,9 +1136,9 @@ CREATE TABLE notices (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_notices_school ON notices(school_id, is_published, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notices_school ON notices(school_id, is_published, created_at DESC);
 
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID REFERENCES schools(id) ON DELETE CASCADE,
     recipient_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -1151,12 +1151,12 @@ CREATE TABLE notifications (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_notifications_recipient ON notifications(recipient_user_id, is_read, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notifications_recipient ON notifications(recipient_user_id, is_read, created_at DESC);
 
 -- ------------------------------------------------------------------------------
 -- 3. HOMEWORK & STUDY MATERIALS
 -- ------------------------------------------------------------------------------
-CREATE TABLE homework (
+CREATE TABLE IF NOT EXISTS homework (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     academic_session_id UUID NOT NULL REFERENCES academic_sessions(id) ON DELETE CASCADE,
@@ -1172,9 +1172,9 @@ CREATE TABLE homework (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE INDEX idx_homework_lookup ON homework(school_id, class_id, section_id);
+CREATE INDEX IF NOT EXISTS idx_homework_lookup ON homework(school_id, class_id, section_id);
 
-CREATE TABLE homework_submissions (
+CREATE TABLE IF NOT EXISTS homework_submissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     homework_id UUID NOT NULL REFERENCES homework(id) ON DELETE CASCADE,
@@ -1189,7 +1189,7 @@ CREATE TABLE homework_submissions (
     CONSTRAINT uq_homework_student UNIQUE (homework_id, student_id)
 );
 
-CREATE TABLE study_materials (
+CREATE TABLE IF NOT EXISTS study_materials (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     class_id UUID NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
@@ -1205,7 +1205,7 @@ CREATE TABLE study_materials (
 -- ------------------------------------------------------------------------------
 -- 4. LEAVE APPLICATIONS
 -- ------------------------------------------------------------------------------
-CREATE TABLE leave_applications (
+CREATE TABLE IF NOT EXISTS leave_applications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     applicant_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -1229,7 +1229,7 @@ CREATE TABLE leave_applications (
 -- ------------------------------------------------------------------------------
 -- 5. AUXILIARY MODULES: LIBRARY, TRANSPORT, ADMISSIONS, EVENTS & GALLERY
 -- ------------------------------------------------------------------------------
-CREATE TABLE library_books (
+CREATE TABLE IF NOT EXISTS library_books (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     title VARCHAR(200) NOT NULL,
@@ -1242,7 +1242,7 @@ CREATE TABLE library_books (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE transport_routes (
+CREATE TABLE IF NOT EXISTS transport_routes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     route_name VARCHAR(150) NOT NULL,
@@ -1252,7 +1252,7 @@ CREATE TABLE transport_routes (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE admission_applications (
+CREATE TABLE IF NOT EXISTS admission_applications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     applicant_name VARCHAR(150) NOT NULL,
@@ -1269,7 +1269,7 @@ CREATE TABLE admission_applications (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE school_events (
+CREATE TABLE IF NOT EXISTS school_events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     title VARCHAR(200) NOT NULL,
@@ -1281,7 +1281,7 @@ CREATE TABLE school_events (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE gallery_items (
+CREATE TABLE IF NOT EXISTS gallery_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
     title VARCHAR(150) NOT NULL,
@@ -1358,20 +1358,25 @@ ALTER TABLE gallery_items ENABLE ROW LEVEL SECURITY;
 -- 1. PLATFORM & SUBSCRIPTION POLICIES
 -- ------------------------------------------------------------------------------
 -- Subscription Plans: Publicly visible, but only Super Admin can mutate
+DROP POLICY IF EXISTS "Public can view active subscription plans" ON subscription_plans;
 CREATE POLICY "Public can view active subscription plans" ON subscription_plans
     FOR SELECT USING (is_active = true OR public.is_super_admin());
 
+DROP POLICY IF EXISTS "Super Admins can manage subscription plans" ON subscription_plans;
 CREATE POLICY "Super Admins can manage subscription plans" ON subscription_plans
     FOR ALL USING (public.is_super_admin());
 
 -- Platform Settings: Read by all authenticated/anon, mutate by Super Admin only
+DROP POLICY IF EXISTS "Anyone can read platform settings" ON platform_settings;
 CREATE POLICY "Anyone can read platform settings" ON platform_settings
     FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Super Admins can modify platform settings" ON platform_settings;
 CREATE POLICY "Super Admins can modify platform settings" ON platform_settings
     FOR ALL USING (public.is_super_admin());
 
 -- Platform Admins: Only Super Admins can query or manage
+DROP POLICY IF EXISTS "Super Admin access to platform admins" ON platform_admins;
 CREATE POLICY "Super Admin access to platform admins" ON platform_admins
     FOR ALL USING (public.is_super_admin());
 
@@ -1379,23 +1384,28 @@ CREATE POLICY "Super Admin access to platform admins" ON platform_admins
 -- 2. SCHOOL TENANT ISOLATION POLICIES
 -- ------------------------------------------------------------------------------
 -- Schools: Anyone can read active basic school info (for public website / login discovery)
+DROP POLICY IF EXISTS "Public can read active school info" ON schools;
 CREATE POLICY "Public can read active school info" ON schools
     FOR SELECT USING (status = 'active' OR public.is_super_admin() OR id = public.current_user_school_id());
 
+DROP POLICY IF EXISTS "Super Admin can manage all schools" ON schools;
 CREATE POLICY "Super Admin can manage all schools" ON schools
     FOR ALL USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "School Admin can update own school" ON schools;
 CREATE POLICY "School Admin can update own school" ON schools
     FOR UPDATE USING (
         id = public.current_user_school_id() AND public.current_user_role() = 'school_admin'
     );
 
 -- School Settings
+DROP POLICY IF EXISTS "School members and public can read settings" ON school_settings;
 CREATE POLICY "School members and public can read settings" ON school_settings
     FOR SELECT USING (
         school_id = public.current_user_school_id() OR public.is_super_admin() OR true
     );
 
+DROP POLICY IF EXISTS "School Admin can update school settings" ON school_settings;
 CREATE POLICY "School Admin can update school settings" ON school_settings
     FOR ALL USING (
         public.is_super_admin() OR 
@@ -1403,21 +1413,25 @@ CREATE POLICY "School Admin can update school settings" ON school_settings
     );
 
 -- School Subscriptions: Read by School Admin, Managed by Super Admin
+DROP POLICY IF EXISTS "School Admin can view own subscription" ON school_subscriptions;
 CREATE POLICY "School Admin can view own subscription" ON school_subscriptions
     FOR SELECT USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin')
     );
 
+DROP POLICY IF EXISTS "Super Admin can manage subscriptions" ON school_subscriptions;
 CREATE POLICY "Super Admin can manage subscriptions" ON school_subscriptions
     FOR ALL USING (public.is_super_admin());
 
 -- ------------------------------------------------------------------------------
 -- 3. PROFILES & USER MEMBERSHIPS
 -- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Users can view and update their own profile" ON profiles;
 CREATE POLICY "Users can view and update their own profile" ON profiles
     FOR ALL USING (id = auth.uid());
 
+DROP POLICY IF EXISTS "School Admins can view members in their school" ON profiles;
 CREATE POLICY "School Admins can view members in their school" ON profiles
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1428,18 +1442,21 @@ CREATE POLICY "School Admins can view members in their school" ON profiles
         )
     );
 
+DROP POLICY IF EXISTS "School Admins manage memberships in own school" ON user_school_memberships;
 CREATE POLICY "School Admins manage memberships in own school" ON user_school_memberships
     FOR ALL USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin')
     );
 
+DROP POLICY IF EXISTS "Users view own school memberships" ON user_school_memberships;
 CREATE POLICY "Users view own school memberships" ON user_school_memberships
     FOR SELECT USING (user_id = auth.uid());
 
 -- ------------------------------------------------------------------------------
 -- 4. SERVER-DRIVEN UI & CONFIGURATION POLICIES
 -- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Members can read published configuration versions" ON configuration_versions;
 CREATE POLICY "Members can read published configuration versions" ON configuration_versions
     FOR SELECT USING (
         is_published = true AND (
@@ -1449,6 +1466,7 @@ CREATE POLICY "Members can read published configuration versions" ON configurati
         )
     );
 
+DROP POLICY IF EXISTS "Super Admin and School Admin manage configurations" ON configuration_versions;
 CREATE POLICY "Super Admin and School Admin manage configurations" ON configuration_versions
     FOR ALL USING (
         public.is_super_admin() OR (
@@ -1457,6 +1475,7 @@ CREATE POLICY "Super Admin and School Admin manage configurations" ON configurat
         )
     );
 
+DROP POLICY IF EXISTS "Auditors can view configuration audit logs" ON configuration_audit_logs;
 CREATE POLICY "Auditors can view configuration audit logs" ON configuration_audit_logs
     FOR SELECT USING (
         public.is_super_admin() OR (
@@ -1465,6 +1484,7 @@ CREATE POLICY "Auditors can view configuration audit logs" ON configuration_audi
         )
     );
 
+DROP POLICY IF EXISTS "System can record configuration audit logs" ON configuration_audit_logs;
 CREATE POLICY "System can record configuration audit logs" ON configuration_audit_logs
     FOR INSERT WITH CHECK (true);
 
@@ -1472,34 +1492,45 @@ CREATE POLICY "System can record configuration audit logs" ON configuration_audi
 -- 5. ACADEMIC MODULE POLICIES (CLASSES, SECTIONS, SUBJECTS, ROUTINES)
 -- ------------------------------------------------------------------------------
 -- Read access: All members of that specific school
+DROP POLICY IF EXISTS "School members can view academic sessions" ON academic_sessions;
 CREATE POLICY "School members can view academic sessions" ON academic_sessions
     FOR SELECT USING (public.is_super_admin() OR school_id = public.current_user_school_id());
+DROP POLICY IF EXISTS "School Admin manages academic sessions" ON academic_sessions;
 CREATE POLICY "School Admin manages academic sessions" ON academic_sessions
     FOR ALL USING (public.is_super_admin() OR (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin'));
 
+DROP POLICY IF EXISTS "School members can view classes" ON classes;
 CREATE POLICY "School members can view classes" ON classes
     FOR SELECT USING (public.is_super_admin() OR school_id = public.current_user_school_id());
+DROP POLICY IF EXISTS "School Admin manages classes" ON classes;
 CREATE POLICY "School Admin manages classes" ON classes
     FOR ALL USING (public.is_super_admin() OR (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin'));
 
+DROP POLICY IF EXISTS "School members can view sections" ON sections;
 CREATE POLICY "School members can view sections" ON sections
     FOR SELECT USING (public.is_super_admin() OR school_id = public.current_user_school_id());
+DROP POLICY IF EXISTS "School Admin manages sections" ON sections;
 CREATE POLICY "School Admin manages sections" ON sections
     FOR ALL USING (public.is_super_admin() OR (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin'));
 
+DROP POLICY IF EXISTS "School members can view subjects" ON subjects;
 CREATE POLICY "School members can view subjects" ON subjects
     FOR SELECT USING (public.is_super_admin() OR school_id = public.current_user_school_id());
+DROP POLICY IF EXISTS "School Admin manages subjects" ON subjects;
 CREATE POLICY "School Admin manages subjects" ON subjects
     FOR ALL USING (public.is_super_admin() OR (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin'));
 
+DROP POLICY IF EXISTS "School members can view routines" ON class_routines;
 CREATE POLICY "School members can view routines" ON class_routines
     FOR SELECT USING (public.is_super_admin() OR school_id = public.current_user_school_id());
+DROP POLICY IF EXISTS "School Admin manages routines" ON class_routines;
 CREATE POLICY "School Admin manages routines" ON class_routines
     FOR ALL USING (public.is_super_admin() OR (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin'));
 
 -- ------------------------------------------------------------------------------
 -- 6. STUDENTS & PARENTS ISOLATION POLICIES
 -- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Student records read access" ON students;
 CREATE POLICY "Student records read access" ON students
     FOR SELECT USING (
         public.is_super_admin() OR
@@ -1514,12 +1545,14 @@ CREATE POLICY "Student records read access" ON students
         ))
     );
 
+DROP POLICY IF EXISTS "School Admin manages students" ON students;
 CREATE POLICY "School Admin manages students" ON students
     FOR ALL USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() = 'school_admin')
     );
 
+DROP POLICY IF EXISTS "Enrollments read access" ON student_enrollments;
 CREATE POLICY "Enrollments read access" ON student_enrollments
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1534,6 +1567,7 @@ CREATE POLICY "Enrollments read access" ON student_enrollments
         ))
     );
 
+DROP POLICY IF EXISTS "School Admin manages student enrollments" ON student_enrollments;
 CREATE POLICY "School Admin manages student enrollments" ON student_enrollments
     FOR ALL USING (
         public.is_super_admin() OR 
@@ -1543,6 +1577,7 @@ CREATE POLICY "School Admin manages student enrollments" ON student_enrollments
 -- ------------------------------------------------------------------------------
 -- 7. ATTENDANCE & EXAMINATION POLICIES
 -- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Student attendance read access" ON student_attendance;
 CREATE POLICY "Student attendance read access" ON student_attendance
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1557,12 +1592,14 @@ CREATE POLICY "Student attendance read access" ON student_attendance
         ))
     );
 
+DROP POLICY IF EXISTS "Authorized staff mark student attendance" ON student_attendance;
 CREATE POLICY "Authorized staff mark student attendance" ON student_attendance
     FOR ALL USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() IN ('school_admin', 'teacher'))
     );
 
+DROP POLICY IF EXISTS "Student marks read access" ON student_marks;
 CREATE POLICY "Student marks read access" ON student_marks
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1577,12 +1614,14 @@ CREATE POLICY "Student marks read access" ON student_marks
         ))
     );
 
+DROP POLICY IF EXISTS "Teachers and School Admin enter marks" ON student_marks;
 CREATE POLICY "Teachers and School Admin enter marks" ON student_marks
     FOR ALL USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() IN ('school_admin', 'teacher'))
     );
 
+DROP POLICY IF EXISTS "Report cards read access" ON report_cards;
 CREATE POLICY "Report cards read access" ON report_cards
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1600,6 +1639,7 @@ CREATE POLICY "Report cards read access" ON report_cards
 -- ------------------------------------------------------------------------------
 -- 8. FINANCIAL POLICIES (INVOICES & PAYMENTS)
 -- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Student invoices read access" ON student_invoices;
 CREATE POLICY "Student invoices read access" ON student_invoices
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1614,12 +1654,14 @@ CREATE POLICY "Student invoices read access" ON student_invoices
         ))
     );
 
+DROP POLICY IF EXISTS "Accountants and School Admin manage invoices" ON student_invoices;
 CREATE POLICY "Accountants and School Admin manage invoices" ON student_invoices
     FOR ALL USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() IN ('school_admin', 'accountant'))
     );
 
+DROP POLICY IF EXISTS "Payment transactions view access" ON payment_transactions;
 CREATE POLICY "Payment transactions view access" ON payment_transactions
     FOR SELECT USING (
         public.is_super_admin() OR 
@@ -1639,6 +1681,7 @@ CREATE POLICY "Payment transactions view access" ON payment_transactions
         ))
     );
 
+DROP POLICY IF EXISTS "Payment transactions recording" ON payment_transactions;
 CREATE POLICY "Payment transactions recording" ON payment_transactions
     FOR INSERT WITH CHECK (
         public.is_super_admin() OR 
@@ -1648,6 +1691,7 @@ CREATE POLICY "Payment transactions recording" ON payment_transactions
 -- ------------------------------------------------------------------------------
 -- 9. NOTICES & NOTIFICATIONS
 -- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "School members read published notices" ON notices;
 CREATE POLICY "School members read published notices" ON notices
     FOR SELECT USING (
         public.is_super_admin() OR (
@@ -1655,12 +1699,14 @@ CREATE POLICY "School members read published notices" ON notices
         )
     );
 
+DROP POLICY IF EXISTS "School Admin and teachers manage notices" ON notices;
 CREATE POLICY "School Admin and teachers manage notices" ON notices
     FOR ALL USING (
         public.is_super_admin() OR 
         (school_id = public.current_user_school_id() AND public.current_user_role() IN ('school_admin', 'teacher'))
     );
 
+DROP POLICY IF EXISTS "Users read own notifications" ON notifications;
 CREATE POLICY "Users read own notifications" ON notifications
     FOR ALL USING (recipient_user_id = auth.uid() OR public.is_super_admin());
 

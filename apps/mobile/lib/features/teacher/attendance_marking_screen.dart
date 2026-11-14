@@ -9,9 +9,9 @@ class AttendanceMarkingScreen extends StatefulWidget {
 
 class _AttendanceMarkingScreenState extends State<AttendanceMarkingScreen> {
   final students = [
-    {'id': '1', 'roll': 1, 'idNumber': 'DMS-2026-001', 'name': 'Tahmid Rahman', 'status': 'present'},
-    {'id': '2', 'roll': 2, 'idNumber': 'DMS-2026-002', 'name': 'Samia Chowdhury', 'status': 'present'},
-    {'id': '3', 'roll': 3, 'idNumber': 'DMS-2026-003', 'name': 'Nafis Iqbal', 'status': 'absent'},
+    {'id': '1', 'roll': 1, 'idNumber': 'SAS-2026-001', 'name': 'Tahmid Rahman', 'status': 'present'},
+    {'id': '2', 'roll': 2, 'idNumber': 'SAS-2026-002', 'name': 'Samia Chowdhury', 'status': 'present'},
+    {'id': '3', 'roll': 3, 'idNumber': 'SAS-2026-003', 'name': 'Nafis Iqbal', 'status': 'absent'},
   ];
 
   void _setStatus(int index, String status) {

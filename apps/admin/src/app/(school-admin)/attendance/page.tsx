@@ -29,7 +29,7 @@ export default function AttendancePage() {
     {
       studentId: '11111111-9999-1111-1111-000000000001',
       roll: 1,
-      idNumber: 'DMS-2026-001',
+      idNumber: 'SAS-2026-001',
       name: 'Tahmid Rahman',
       status: 'present' as 'present' | 'absent' | 'late' | 'excused',
       remarks: '',
@@ -37,7 +37,7 @@ export default function AttendancePage() {
     {
       studentId: '11111111-9999-1111-1111-000000000002',
       roll: 2,
-      idNumber: 'DMS-2026-002',
+      idNumber: 'SAS-2026-002',
       name: 'Samia Chowdhury',
       status: 'present' as 'present' | 'absent' | 'late' | 'excused',
       remarks: '',
@@ -45,7 +45,7 @@ export default function AttendancePage() {
     {
       studentId: '11111111-9999-1111-1111-000000000003',
       roll: 3,
-      idNumber: 'DMS-2026-003',
+      idNumber: 'SAS-2026-003',
       name: 'Nafis Iqbal',
       status: 'absent' as 'present' | 'absent' | 'late' | 'excused',
       remarks: 'Sick leave requested',

@@ -11,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _selectedSchool = 'dhaka-model';
   String _selectedRole = 'student';
-  final _idController = TextEditingController(text: 'DMS-2026-001');
+  final _idController = TextEditingController(text: 'SAS-2026-001');
   final _passwordController = TextEditingController(text: '••••••••');
   bool _isLoading = false;
 
@@ -20,9 +20,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Future.delayed(const Duration(milliseconds: 400), () {
       setState(() => _isLoading = false);
       final schoolName = _selectedSchool == 'dhaka-model'
-          ? 'DHAKA MODEL SCHOOL'
+          ? 'SAS SMART SCHOOL'
           : 'CHITTAGONG GRAMMAR SCHOOL';
-      final schoolCode = _selectedSchool == 'dhaka-model' ? 'DMS' : 'CGS';
+      final schoolCode = _selectedSchool == 'dhaka-model' ? 'SAS' : 'CGS';
 
       // Route directly into the ONE master unified App Dashboard
       Navigator.pushReplacement(
@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             dropdownColor: const Color(0xFF0F172A),
                             style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
                             items: const [
-                              DropdownMenuItem(value: 'dhaka-model', child: Text('Dhaka Model School (DMS)')),
+                              DropdownMenuItem(value: 'dhaka-model', child: Text('SAS Smart School (DMS)')),
                               DropdownMenuItem(value: 'cgs-ctg', child: Text('Chittagong Grammar School (CGS)')),
                             ],
                             onChanged: (val) {
@@ -205,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
           setState(() {
             _selectedRole = role;
             if (role == 'student') {
-              _idController.text = 'DMS-2026-001';
+              _idController.text = 'SAS-2026-001';
             } else if (role == 'parent') {
               _idController.text = 'parent@dhakamodel.edu.bd';
             } else {

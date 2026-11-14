@@ -63,7 +63,7 @@ export default function AcademicsPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Classes & Sections (Session 2026)</CardTitle>
-              <CardDescription>Academic grades recognized under Dhaka Model School</CardDescription>
+              <CardDescription>Academic grades recognized under SAS Smart School</CardDescription>
             </div>
             <Button size="sm" className="bg-blue-600 hover:bg-blue-700">Add Class</Button>
           </CardHeader>

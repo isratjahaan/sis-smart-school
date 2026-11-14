@@ -10,7 +10,7 @@ class FeesScreen extends StatefulWidget {
 class _FeesScreenState extends State<FeesScreen> {
   final invoices = [
     {
-      'number': 'INV-DMS-2026-0001',
+      'number': 'INV-SAS-2026-0001',
       'title': 'January 2026 Tuition Fee',
       'amount': '৳2,500',
       'due': '৳0',
@@ -18,7 +18,7 @@ class _FeesScreenState extends State<FeesScreen> {
       'date': 'Paid on Jan 12, 2026',
     },
     {
-      'number': 'INV-DMS-2026-0002',
+      'number': 'INV-SAS-2026-0002',
       'title': 'February 2026 Tuition Fee',
       'amount': '৳2,500',
       'due': '৳2,500',

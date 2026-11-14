@@ -43,7 +43,7 @@ export default function StudentsPage() {
   const [students, setStudents] = useState<any[]>([
     {
       id: '1',
-      student_id_number: 'DMS-2026-001',
+      student_id_number: 'SAS-2026-001',
       admission_number: 'ADM-1001',
       first_name: 'Tahmid',
       last_name: 'Rahman',
@@ -56,7 +56,7 @@ export default function StudentsPage() {
     },
     {
       id: '2',
-      student_id_number: 'DMS-2026-002',
+      student_id_number: 'SAS-2026-002',
       admission_number: 'ADM-1002',
       first_name: 'Samia',
       last_name: 'Chowdhury',
@@ -69,7 +69,7 @@ export default function StudentsPage() {
     },
     {
       id: '3',
-      student_id_number: 'DMS-2026-003',
+      student_id_number: 'SAS-2026-003',
       admission_number: 'ADM-1003',
       first_name: 'Nafis',
       last_name: 'Iqbal',
@@ -137,7 +137,7 @@ export default function StudentsPage() {
 
     const newStudent = {
       id: String(Date.now()),
-      student_id_number: formData.studentIdNumber || `DMS-2026-${String(students.length + 1).padStart(3, '0')}`,
+      student_id_number: formData.studentIdNumber || `SAS-2026-${String(students.length + 1).padStart(3, '0')}`,
       admission_number: formData.admissionNumber || `ADM-${1000 + students.length + 1}`,
       first_name: formData.firstName,
       last_name: formData.lastName,
@@ -210,7 +210,7 @@ export default function StudentsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Student Directory</h1>
           <p className="text-sm text-slate-500">
-            Manage academic enrollments, roll numbers, and student records for Dhaka Model School
+            Manage academic enrollments, roll numbers, and student records for SAS Smart School
           </p>
         </div>
         <div className="flex items-center gap-3">

@@ -11,11 +11,11 @@ class DigitalIdCardScreen extends StatelessWidget {
   const DigitalIdCardScreen({
     Key? key,
     this.studentName = 'Tahmid Rahman',
-    this.studentIdNumber = 'DMS-2026-001',
+    this.studentIdNumber = 'SAS-2026-001',
     this.className = 'Class 10 (Padma)',
     this.rollNumber = 1,
     this.bloodGroup = 'B+',
-    this.schoolName = 'DHAKA MODEL SCHOOL',
+    this.schoolName = 'SAS SMART SCHOOL',
   }) : super(key: key);
 
   @override

@@ -17,8 +17,8 @@ class AppDashboardScreen extends StatefulWidget {
   const AppDashboardScreen({
     Key? key,
     this.initialRole = 'student',
-    this.schoolName = 'DHAKA MODEL SCHOOL',
-    this.schoolCode = 'DMS',
+    this.schoolName = 'SAS SMART SCHOOL',
+    this.schoolCode = 'SAS',
   }) : super(key: key);
 
   @override

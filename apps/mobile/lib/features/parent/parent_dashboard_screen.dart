@@ -13,7 +13,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   final children = [
     {
       'name': 'Tahmid Rahman',
-      'id': 'DMS-2026-001',
+      'id': 'SAS-2026-001',
       'class': 'Class 10 (Section A)',
       'roll': 1,
       'attendance': 'Present (07:55 AM)',
@@ -23,7 +23,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
     },
     {
       'name': 'Nafis Iqbal',
-      'id': 'DMS-2026-003',
+      'id': 'SAS-2026-003',
       'class': 'Class 10 (Section A)',
       'roll': 3,
       'attendance': 'Absent (Sick Leave)',

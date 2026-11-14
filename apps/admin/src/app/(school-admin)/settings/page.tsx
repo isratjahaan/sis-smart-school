@@ -13,7 +13,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
 
   const [settings, setSettings] = useState({
-    schoolName: 'Dhaka Model School',
+    schoolName: 'SAS Smart School',
     principalName: 'Prof. Mohammad Rafiqul Islam',
     email: 'contact@dhakamodel.edu.bd',
     phone: '+8801711223344',

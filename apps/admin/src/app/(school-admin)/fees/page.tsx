@@ -40,10 +40,10 @@ export default function FeesPage() {
   const [invoices, setInvoices] = useState([
     {
       id: '11111111-6666-2222-1111-000000000001',
-      invoiceNumber: 'INV-DMS-2026-0001',
+      invoiceNumber: 'INV-SAS-2026-0001',
       studentName: 'Tahmid Rahman',
       roll: 1,
-      studentId: 'DMS-2026-001',
+      studentId: 'SAS-2026-001',
       title: 'January 2026 Tuition Fee',
       category: 'Monthly Tuition Fee',
       totalAmount: 2500,
@@ -54,10 +54,10 @@ export default function FeesPage() {
     },
     {
       id: '11111111-6666-2222-1111-000000000002',
-      invoiceNumber: 'INV-DMS-2026-0002',
+      invoiceNumber: 'INV-SAS-2026-0002',
       studentName: 'Tahmid Rahman',
       roll: 1,
-      studentId: 'DMS-2026-001',
+      studentId: 'SAS-2026-001',
       title: 'February 2026 Tuition Fee',
       category: 'Monthly Tuition Fee',
       totalAmount: 2500,
@@ -68,10 +68,10 @@ export default function FeesPage() {
     },
     {
       id: '11111111-6666-2222-1111-000000000003',
-      invoiceNumber: 'INV-DMS-2026-0003',
+      invoiceNumber: 'INV-SAS-2026-0003',
       studentName: 'Samia Chowdhury',
       roll: 2,
-      studentId: 'DMS-2026-002',
+      studentId: 'SAS-2026-002',
       title: 'January 2026 Tuition Fee',
       category: 'Monthly Tuition Fee',
       totalAmount: 2500,

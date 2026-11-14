@@ -30,7 +30,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
     _screenModel = SDUIScreenModel(
       screenId: 'student_home',
       version: 1,
-      title: 'Dhaka Model School Student Portal',
+      title: 'SAS Smart School Student Portal',
       components: [
         SDUIComponentModel(
           id: 'comp_welcome',
@@ -118,7 +118,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               title: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('DHAKA MODEL SCHOOL', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  Text('SAS SMART SCHOOL', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   Text('Tahmid Rahman • Class 10', style: TextStyle(fontSize: 11, color: Colors.white70)),
                 ],
               ),

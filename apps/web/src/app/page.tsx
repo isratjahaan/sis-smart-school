@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function RootHomePage() {
-  redirect('/school/dhaka-model');
+  redirect('/school/sas-smart-school');
 }

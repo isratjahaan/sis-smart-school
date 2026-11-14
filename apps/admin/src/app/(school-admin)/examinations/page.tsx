@@ -26,7 +26,7 @@ export default function ExaminationsPage() {
       id: '1',
       studentId: '11111111-9999-1111-1111-000000000001',
       roll: 1,
-      idNumber: 'DMS-2026-001',
+      idNumber: 'SAS-2026-001',
       name: 'Tahmid Rahman',
       bangla: 88,
       english: 84,
@@ -40,7 +40,7 @@ export default function ExaminationsPage() {
       id: '2',
       studentId: '11111111-9999-1111-1111-000000000002',
       roll: 2,
-      idNumber: 'DMS-2026-002',
+      idNumber: 'SAS-2026-002',
       name: 'Samia Chowdhury',
       bangla: 78,
       english: 82,
@@ -54,7 +54,7 @@ export default function ExaminationsPage() {
       id: '3',
       studentId: '11111111-9999-1111-1111-000000000003',
       roll: 3,
-      idNumber: 'DMS-2026-003',
+      idNumber: 'SAS-2026-003',
       name: 'Nafis Iqbal',
       bangla: 62,
       english: 55,
@@ -226,7 +226,7 @@ export default function ExaminationsPage() {
           <div className="bg-white rounded-2xl max-w-2xl w-full p-8 shadow-2xl border border-slate-200 space-y-6 animate-in fade-in zoom-in-95">
             {/* School Header */}
             <div className="text-center pb-4 border-b border-slate-200 space-y-1">
-              <h2 className="text-2xl font-bold text-blue-900">DHAKA MODEL SCHOOL</h2>
+              <h2 className="text-2xl font-bold text-blue-900">SAS SMART SCHOOL</h2>
               <p className="text-xs text-slate-500">House 42, Road 11, Dhanmondi, Dhaka • Estd. 1995</p>
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest pt-2">
                 Official Academic Transcript / Report Card

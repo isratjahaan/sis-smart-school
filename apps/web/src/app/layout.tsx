@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'SIS Smart School — Public School Web Portal',
-  description: 'Enterprise Multi-Tenant School Information System',
+  title: 'SAS Smart School — Official Web Portal',
+  description: 'Official Web Portal and Online Information System for SAS Smart School',
 };
 
 export default function RootLayout({

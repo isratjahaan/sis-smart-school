@@ -23,16 +23,40 @@ interface SchoolData {
 }
 
 const mockSchools: Record<string, SchoolData> = {
-  'dhaka-model': {
+  'sas-smart-school': {
     id: '11111111-1111-1111-1111-111111111111',
-    name: 'Dhaka Model School',
-    slug: 'dhaka-model',
-    code: 'DMS',
+    name: 'SAS Smart School',
+    slug: 'sas-smart-school',
+    code: 'SAS',
     phone: '+8801711223344',
-    email: 'contact@dhakamodel.edu.bd',
+    email: 'contact@sassmartschool.edu.bd',
     address: 'House 42, Road 11, Dhanmondi, Dhaka',
     city: 'Dhaka',
-    established_year: 1995,
+    established_year: 2010,
+    principal_name: 'Prof. Mohammad Rafiqul Islam',
+  },
+  'sas': {
+    id: '11111111-1111-1111-1111-111111111111',
+    name: 'SAS Smart School',
+    slug: 'sas-smart-school',
+    code: 'SAS',
+    phone: '+8801711223344',
+    email: 'contact@sassmartschool.edu.bd',
+    address: 'House 42, Road 11, Dhanmondi, Dhaka',
+    city: 'Dhaka',
+    established_year: 2010,
+    principal_name: 'Prof. Mohammad Rafiqul Islam',
+  },
+  'dhaka-model': {
+    id: '11111111-1111-1111-1111-111111111111',
+    name: 'SAS Smart School',
+    slug: 'sas-smart-school',
+    code: 'SAS',
+    phone: '+8801711223344',
+    email: 'contact@sassmartschool.edu.bd',
+    address: 'House 42, Road 11, Dhanmondi, Dhaka',
+    city: 'Dhaka',
+    established_year: 2010,
     principal_name: 'Prof. Mohammad Rafiqul Islam',
   },
   'cgs-ctg': {
@@ -92,8 +116,8 @@ export default async function SchoolPublicPage({
   }
 
   if (!school) {
-    // Default to Dhaka Model School if slug is unknown
-    school = mockSchools['dhaka-model'];
+    // Default to SAS Smart School
+    school = mockSchools['sas-smart-school'];
   }
 
   return (

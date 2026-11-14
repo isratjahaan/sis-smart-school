@@ -58,7 +58,7 @@ export default function SchoolDashboardPage() {
       }
 
       try {
-        const schoolId = '11111111-1111-1111-1111-111111111111'; // Dhaka Model School test tenant
+        const schoolId = '11111111-1111-1111-1111-111111111111'; // SAS Smart School test tenant
         const today = new Date().toISOString().split('T')[0];
 
         // Fetch counts from Supabase in parallel
@@ -121,7 +121,7 @@ export default function SchoolDashboardPage() {
           <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm text-white mb-2">
             Academic Session 2026
           </span>
-          <h1 className="text-2xl font-bold tracking-tight">Dhaka Model School</h1>
+          <h1 className="text-2xl font-bold tracking-tight">SAS Smart School</h1>
           <p className="text-sm text-blue-100 mt-1">
             Welcome back! All academic operations and attendance records are up to date.
           </p>
