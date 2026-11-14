@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../student/student_dashboard_screen.dart';
-import '../parent/parent_dashboard_screen.dart';
-import '../teacher/teacher_dashboard_screen.dart';
+import '../dashboard/app_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,22 +19,22 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     Future.delayed(const Duration(milliseconds: 400), () {
       setState(() => _isLoading = false);
-      if (_selectedRole == 'student') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const StudentDashboardScreen()),
-        );
-      } else if (_selectedRole == 'parent') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const ParentDashboardScreen()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const TeacherDashboardScreen()),
-        );
-      }
+      final schoolName = _selectedSchool == 'dhaka-model'
+          ? 'DHAKA MODEL SCHOOL'
+          : 'CHITTAGONG GRAMMAR SCHOOL';
+      final schoolCode = _selectedSchool == 'dhaka-model' ? 'DMS' : 'CGS';
+
+      // Route directly into the ONE master unified App Dashboard
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AppDashboardScreen(
+            initialRole: _selectedRole,
+            schoolName: schoolName,
+            schoolCode: schoolCode,
+          ),
+        ),
+      );
     });
   }
 
@@ -79,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 1),
                 ),
                 const Text(
-                  'Mobile Portal Authentication',
+                  'Unified Mobile Portal Authentication',
                   style: TextStyle(color: Colors.white60, fontSize: 12),
                 ),
 
@@ -141,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 18),
 
                       // ID Field
-                      const Text('Student ID / Email', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                      const Text('Institutional ID / Email', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _idController,
@@ -185,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           child: _isLoading
                               ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                              : const Text('Sign In', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                              : const Text('Open Unified Dashboard', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
