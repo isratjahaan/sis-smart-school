@@ -4,6 +4,10 @@ import '../sdui/models/sdui_component_model.dart';
 import '../sdui/engine/sdui_renderer.dart';
 import '../../core/storage/offline_cache_manager.dart';
 import 'digital_id_card_screen.dart';
+import 'routine_screen.dart';
+import 'results_screen.dart';
+import 'fees_screen.dart';
+import '../notices/notices_screen.dart';
 
 class StudentDashboardScreen extends StatefulWidget {
   const StudentDashboardScreen({Key? key}) : super(key: key);
@@ -15,7 +19,6 @@ class StudentDashboardScreen extends StatefulWidget {
 class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   int _currentNavIndex = 0;
   late SDUIScreenModel _screenModel;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -24,7 +27,6 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   void _loadScreenConfig() {
-    // Standard baseline configuration loaded from local cache / remote
     _screenModel = SDUIScreenModel(
       screenId: 'student_home',
       version: 1,
@@ -84,54 +86,62 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Future<void> _handleRefresh() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 500));
     _loadScreenConfig();
-    setState(() => _isLoading = false);
+  }
+
+  Widget _buildBody() {
+    switch (_currentNavIndex) {
+      case 0:
+        return SDUIRenderer(
+          screen: _screenModel,
+          onRefresh: _handleRefresh,
+        );
+      case 1:
+        return const RoutineScreen();
+      case 2:
+        return const ResultsScreen();
+      case 3:
+        return const FeesScreen();
+      case 4:
+        return const DigitalIdCardScreen();
+      default:
+        return SDUIRenderer(screen: _screenModel);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('DHAKA MODEL SCHOOL', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-            Text('Tahmid Rahman • Class 10', style: TextStyle(fontSize: 11, color: Colors.white70)),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.badge_rounded),
-            tooltip: 'Digital ID Card',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const DigitalIdCardScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SDUIRenderer(
-        screen: _screenModel,
-        onRefresh: _handleRefresh,
-      ),
+      appBar: _currentNavIndex == 0
+          ? AppBar(
+              title: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('DHAKA MODEL SCHOOL', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  Text('Tahmid Rahman • Class 10', style: TextStyle(fontSize: 11, color: Colors.white70)),
+                ],
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.badge_rounded),
+                  tooltip: 'Digital ID Card',
+                  onPressed: () => setState(() => _currentNavIndex = 4),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.notifications_outlined),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const NoticesScreen()));
+                  },
+                ),
+              ],
+            )
+          : null,
+      body: _buildBody(),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentNavIndex,
         onDestinationSelected: (index) {
           setState(() => _currentNavIndex = index);
-          if (index == 4) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const DigitalIdCardScreen()),
-            );
-          }
         },
         destinations: const [
           NavigationDestination(

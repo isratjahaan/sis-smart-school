@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'attendance_marking_screen.dart';
 
 class TeacherDashboardScreen extends StatelessWidget {
   final String teacherName;
@@ -59,7 +60,12 @@ class TeacherDashboardScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AttendanceMarkingScreen()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF2563EB),
