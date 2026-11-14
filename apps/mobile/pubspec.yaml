@@ -1,0 +1,33 @@
+name: sis_smart_school
+description: SIS Smart School - Production-Ready Multi-Tenant School Management Mobile Application
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.8.0
+  supabase_flutter: ^2.8.3
+  flutter_secure_storage: ^9.2.4
+  shared_preferences: ^2.5.2
+  cached_network_image: ^3.4.1
+  dio: ^5.8.0+1
+  intl: ^0.20.2
+  uuid: ^4.5.1
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.17
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/

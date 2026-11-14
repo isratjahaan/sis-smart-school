@@ -1,0 +1,25 @@
+{
+  "name": "sis-smart-school-ecosystem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-Ready Enterprise Multi-Tenant School Management SaaS Ecosystem",
+  "workspaces": [
+    "packages/*",
+    "apps/admin",
+    "apps/web"
+  ],
+  "scripts": {
+    "build:packages": "npm --workspace=packages/shared-types run build --if-present && npm --workspace=packages/shared-validation run build --if-present",
+    "build:admin": "npm --workspace=apps/admin run build",
+    "build:web": "npm --workspace=apps/web run build",
+    "build": "npm run build:packages && npm run build:admin && npm run build:web",
+    "dev:admin": "npm --workspace=apps/admin run dev",
+    "dev:web": "npm --workspace=apps/web run dev",
+    "test": "npm --workspace=packages/shared-types test --if-present && npm --workspace=packages/shared-validation test --if-present && npm --workspace=apps/admin test --if-present",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm --workspace=apps/admin run lint --if-present && npm --workspace=apps/web run lint --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

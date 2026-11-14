@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@sis/shared-types": ["../../packages/shared-types/src/index.ts"],
+      "@sis/shared-validation": ["../../packages/shared-validation/src/index.ts"],
+      "@sis/api-contracts": ["../../packages/api-contracts/src/index.ts"],
+      "@sis/design-tokens": ["../../packages/design-tokens/src/index.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
