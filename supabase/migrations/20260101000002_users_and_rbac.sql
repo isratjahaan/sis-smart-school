@@ -91,39 +91,36 @@ CREATE TABLE role_permissions (
 -- ------------------------------------------------------------------------------
 
 -- Get current authenticated user ID
-CREATE OR REPLACE FUNCTION auth.current_user_id()
-RETURNS UUID AS $$
-    SELECT nullif(current_setting('request.jwt.claim.sub', true), '')::uuid;
-$$ LANGUAGE sql STABLE;
+-- Note: auth.uid() is provided natively by Supabase
 
 -- Check if current user is Platform Super Admin
-CREATE OR REPLACE FUNCTION auth.is_super_admin()
+CREATE OR REPLACE FUNCTION public.is_super_admin()
 RETURNS BOOLEAN AS $$
     SELECT EXISTS (
         SELECT 1 
         FROM platform_admins 
-        WHERE user_id = auth.current_user_id() 
+        WHERE user_id = auth.uid() 
           AND is_active = true
     );
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Get current user's active school ID from primary membership or session claim
-CREATE OR REPLACE FUNCTION auth.current_user_school_id()
+CREATE OR REPLACE FUNCTION public.current_user_school_id()
 RETURNS UUID AS $$
     SELECT school_id 
     FROM user_school_memberships 
-    WHERE user_id = auth.current_user_id() 
+    WHERE user_id = auth.uid() 
       AND is_active = true 
     ORDER BY is_primary DESC, created_at ASC 
     LIMIT 1;
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Get current user's role in the specified or current school
-CREATE OR REPLACE FUNCTION auth.current_user_role(p_school_id UUID DEFAULT NULL)
+CREATE OR REPLACE FUNCTION public.current_user_role(p_school_id UUID DEFAULT NULL)
 RETURNS VARCHAR AS $$
     SELECT role 
     FROM user_school_memberships 
-    WHERE user_id = auth.current_user_id() 
+    WHERE user_id = auth.uid() 
       AND is_active = true 
       AND (p_school_id IS NULL OR school_id = p_school_id)
     ORDER BY is_primary DESC 
@@ -131,18 +128,18 @@ RETURNS VARCHAR AS $$
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Granular permission check
-CREATE OR REPLACE FUNCTION auth.has_permission(p_permission_code VARCHAR, p_school_id UUID DEFAULT NULL)
+CREATE OR REPLACE FUNCTION public.has_permission(p_permission_code VARCHAR, p_school_id UUID DEFAULT NULL)
 RETURNS BOOLEAN AS $$
 DECLARE
     v_role VARCHAR;
     v_school UUID;
 BEGIN
-    IF auth.is_super_admin() THEN
+    IF public.is_super_admin() THEN
         RETURN true;
     END IF;
 
-    v_school := COALESCE(p_school_id, auth.current_user_school_id());
-    v_role := auth.current_user_role(v_school);
+    v_school := COALESCE(p_school_id, public.current_user_school_id());
+    v_role := public.current_user_role(v_school);
 
     IF v_role = 'school_admin' THEN
         RETURN true; -- School Admins possess complete administrative authority within their tenant
@@ -191,3 +188,4 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
