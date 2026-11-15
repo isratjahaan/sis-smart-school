@@ -42,7 +42,7 @@ class WelcomeBannerWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            config.title ?? 'Welcome to SIS Smart School',
+            config.title ?? 'Welcome to SAS Smart School',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 20,

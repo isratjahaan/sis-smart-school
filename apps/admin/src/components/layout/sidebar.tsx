@@ -17,6 +17,8 @@ import {
   Building2,
   Sliders,
   ShieldCheck,
+  ShieldAlert,
+  Smartphone,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -39,6 +41,8 @@ export function Sidebar({ isSuperAdmin = false }: { isSuperAdmin?: boolean }) {
     { title: 'Examinations', href: '/examinations', icon: Award },
     { title: 'Fees & Accounts', href: '/fees', icon: CreditCard },
     { title: 'Notice Board', href: '/notices', icon: Bell },
+    { title: 'Mobile App Sync', href: '/mobile-control', icon: Smartphone, badge: 'Live' },
+    { title: 'Anti-Theft Remote', href: '/anti-theft', icon: ShieldAlert, badge: 'Remote' },
     { title: 'School Settings', href: '/settings', icon: Settings },
   ];
 

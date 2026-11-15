@@ -112,14 +112,14 @@ class _FeesScreenState extends State<FeesScreen> {
                 border: Border.all(color: const Color(0xFFFCA5A5)),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.between,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text('Outstanding Tuition Due', style: TextStyle(color: Color(0xFF991B1B), fontSize: 12, fontWeight: FontWeight.w600)),
                       SizedBox(height: 4),
-                      Text('৳2,500', style: TextStyle(color: Color(0xFFDC2626), fontSize: 24, fontWeight: FontWeight.black)),
+                      Text('৳2,500', style: TextStyle(color: Color(0xFFDC2626), fontSize: 24, fontWeight: FontWeight.w900)),
                     ],
                   ),
                   ElevatedButton(
@@ -145,7 +145,7 @@ class _FeesScreenState extends State<FeesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(inv['number']!, style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: Colors.grey)),
                           Container(
@@ -169,7 +169,7 @@ class _FeesScreenState extends State<FeesScreen> {
                       Text(inv['title']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                       const SizedBox(height: 4),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(inv['date']!, style: const TextStyle(fontSize: 11, color: Colors.grey)),
                           Text(inv['amount']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),

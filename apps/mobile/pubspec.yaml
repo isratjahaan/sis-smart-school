@@ -31,3 +31,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+
+dependency_overrides:
+  shared_preferences_android: 2.2.1
+  path_provider_android: 2.2.1
+

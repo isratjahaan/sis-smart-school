@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, Plus, Mail, Phone, BookOpen, Award, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 
 export default function TeachersPage() {
-  const [teachers, setTeachers] = useState([
+  const [teachers, setTeachers] = useState<any[]>([
     {
       id: '1',
       teacherIdNumber: 'TCH-001',
@@ -17,7 +17,7 @@ export default function TeachersPage() {
       designation: 'Senior Assistant Teacher',
       department: 'Mathematics',
       phone: '+8801712000001',
-      email: 'kamrul.hasan@dhakamodel.edu.bd',
+      email: 'kamrul.hasan@sas.edu.bd',
       assignedClass: 'Class 10 (Math)',
       status: 'active',
     },
@@ -29,7 +29,7 @@ export default function TeachersPage() {
       designation: 'Assistant Teacher',
       department: 'English',
       phone: '+8801712000002',
-      email: 'farhana.akter@dhakamodel.edu.bd',
+      email: 'farhana.akter@sas.edu.bd',
       assignedClass: 'Class 9 (English)',
       status: 'active',
     },
@@ -41,11 +41,38 @@ export default function TeachersPage() {
       designation: 'Lecturer in ICT',
       department: 'Computer Science',
       phone: '+8801712000003',
-      email: 'shahidul.alam@dhakamodel.edu.bd',
+      email: 'shahidul.alam@sas.edu.bd',
       assignedClass: 'Class 10 (ICT)',
       status: 'active',
     },
   ]);
+
+  useEffect(() => {
+    async function loadTeachers() {
+      try {
+        const res = await fetch('/api/teachers');
+        const json = await res.json();
+        if (json.success && json.data && json.data.length > 0) {
+          const mapped = json.data.map((t: any) => ({
+            id: t.id,
+            teacherIdNumber: t.teacher_id_number || 'TCH-001',
+            name: `${t.first_name || ''} ${t.last_name || ''}`.trim(),
+            qualification: t.qualification || 'Academic Faculty',
+            designation: t.designation || 'Teacher',
+            department: t.department || 'General',
+            phone: t.phone || '+8801700000000',
+            email: t.email || 'teacher@sas.edu.bd',
+            assignedClass: 'Class 10',
+            status: t.status || 'active',
+          }));
+          setTeachers(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to load teachers:', err);
+      }
+    }
+    loadTeachers();
+  }, []);
 
   return (
     <div className="space-y-6">

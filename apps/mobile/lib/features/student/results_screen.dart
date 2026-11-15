@@ -38,7 +38,7 @@ class ResultsScreen extends StatelessWidget {
                 children: [
                   const Text('FIRST TERM EXAMINATION 2026', style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
-                  const Text('GPA 5.00', style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.black)),
+                  const Text('GPA 5.00', style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w900)),
                   const Text('Letter Grade: A+ (Outstanding)', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
                   Container(
@@ -67,7 +67,7 @@ class ResultsScreen extends StatelessWidget {
                     ...subjects.map((s) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: Text(s['name'] as String, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),

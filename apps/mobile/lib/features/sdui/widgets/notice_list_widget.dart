@@ -15,7 +15,7 @@ class NoticeListWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.between,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
@@ -38,17 +38,17 @@ class NoticeListWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: const Color(0xFFE2E8F0)),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'First Term Examination 2026 Schedule Published',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    config.title ?? 'School Notice Board',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
-                    'Schedule published for Class 6 to 10. Clear fees prior to exam.',
-                    style: TextStyle(color: Colors.grey, fontSize: 11),
+                    config.subtitle ?? 'Check recent announcements and school circulars.',
+                    style: const TextStyle(color: Colors.grey, fontSize: 11),
                   ),
                 ],
               ),

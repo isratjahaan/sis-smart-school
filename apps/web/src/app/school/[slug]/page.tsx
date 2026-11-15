@@ -7,7 +7,7 @@ import { NoticeBoardSection } from '@/components/NoticeBoardSection';
 import { ResultCheckerSection } from '@/components/ResultCheckerSection';
 import { OnlineAdmissionSection } from '@/components/OnlineAdmissionSection';
 import { Footer } from '@/components/Footer';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, createServerClient } from '@/lib/supabase';
 
 interface SchoolData {
   id: string;
@@ -90,6 +90,8 @@ const defaultNotices = [
   },
 ];
 
+export const dynamic = 'force-dynamic';
+
 export default async function SchoolPublicPage({
   params,
 }: {
@@ -120,13 +122,38 @@ export default async function SchoolPublicPage({
     school = mockSchools['sas-smart-school'];
   }
 
+  let notices = defaultNotices;
+  if (isSupabaseConfigured) {
+    try {
+      const serverSupabase = createServerClient();
+      const { data: dbNotices } = await serverSupabase
+        .from('notices')
+        .select('*')
+        .eq('school_id', school.id)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+
+      if (dbNotices && dbNotices.length > 0) {
+        notices = dbNotices.map((n: any) => ({
+          id: n.id,
+          title: n.title,
+          content: n.content,
+          priority: n.priority || 'normal',
+          created_at: n.created_at ? new Date(n.created_at).toLocaleDateString() : 'Today',
+        }));
+      }
+    } catch (e) {
+      // fallback to mock
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar school={school} />
       <main className="flex-1">
         <HeroSection school={school} />
         <AboutSection school={school} />
-        <NoticeBoardSection notices={defaultNotices} />
+        <NoticeBoardSection notices={notices} />
         <ResultCheckerSection />
         <OnlineAdmissionSection school={school} />
       </main>

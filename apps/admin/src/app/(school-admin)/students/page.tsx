@@ -84,44 +84,23 @@ export default function StudentsPage() {
 
   useEffect(() => {
     async function loadStudents() {
-      if (!isSupabaseConfigured) return;
       try {
-        const { data, error } = await supabase
-          .from('students')
-          .select(`
-            id,
-            student_id_number,
-            admission_number,
-            first_name,
-            last_name,
-            gender,
-            phone,
-            status,
-            student_enrollments (
-              roll_number,
-              classes (name),
-              sections (name)
-            )
-          `)
-          .eq('school_id', '11111111-1111-1111-1111-111111111111');
-
-        if (data && data.length > 0) {
-          const mapped = data.map((s: any) => {
-            const enroll = s.student_enrollments?.[0];
-            return {
-              id: s.id,
-              student_id_number: s.student_id_number,
-              admission_number: s.admission_number,
-              first_name: s.first_name,
-              last_name: s.last_name,
-              class_name: enroll?.classes?.name || 'Class 10',
-              section_name: enroll?.sections?.name || 'Padma',
-              roll_number: enroll?.roll_number || 1,
-              gender: s.gender,
-              phone: s.phone,
-              status: s.status,
-            };
-          });
+        const res = await fetch('/api/students');
+        const json = await res.json();
+        if (json.success && json.data && json.data.length > 0) {
+          const mapped = json.data.map((s: any, idx: number) => ({
+            id: s.id,
+            student_id_number: s.student_id_number || `SAS-2026-${String(idx + 1).padStart(3, '0')}`,
+            admission_number: s.admission_number || `ADM-${1000 + idx + 1}`,
+            first_name: s.first_name,
+            last_name: s.last_name,
+            class_name: 'Class 10',
+            section_name: 'Padma',
+            roll_number: idx + 1,
+            gender: s.gender || 'male',
+            phone: s.phone || '+8801700000000',
+            status: s.status || 'active',
+          }));
           setStudents(mapped);
         }
       } catch (e) {
@@ -135,44 +114,37 @@ export default function StudentsPage() {
     e.preventDefault();
     setSaving(true);
 
-    const newStudent = {
-      id: String(Date.now()),
-      student_id_number: formData.studentIdNumber || `SAS-2026-${String(students.length + 1).padStart(3, '0')}`,
-      admission_number: formData.admissionNumber || `ADM-${1000 + students.length + 1}`,
+    const payload = {
       first_name: formData.firstName,
       last_name: formData.lastName,
+      student_id_number: formData.studentIdNumber || `SAS-2026-${String(students.length + 1).padStart(3, '0')}`,
+      admission_number: formData.admissionNumber || `ADM-${1000 + students.length + 1}`,
+      gender: formData.gender,
+      phone: formData.phone || '+8801700000000',
+      address: formData.address || 'Dhaka',
+    };
+
+    let newStudent: any = {
+      id: String(Date.now()),
+      ...payload,
       class_name: formData.classGrade,
       section_name: formData.sectionName,
       roll_number: Number(formData.rollNumber) || students.length + 1,
-      gender: formData.gender,
-      phone: formData.phone || '+8801700000000',
       status: 'active',
     };
 
-    if (isSupabaseConfigured) {
-      try {
-        const schoolId = '11111111-1111-1111-1111-111111111111';
-        const { data: st, error } = await supabase.from('students').insert({
-          school_id: schoolId,
-          student_id_number: newStudent.student_id_number,
-          admission_number: newStudent.admission_number,
-          admission_date: new Date().toISOString().split('T')[0],
-          first_name: newStudent.first_name,
-          last_name: newStudent.last_name,
-          date_of_birth: '2010-01-01',
-          gender: newStudent.gender,
-          nationality: 'Bangladeshi',
-          phone: newStudent.phone,
-          address: formData.address || 'Dhaka',
-          status: 'active',
-        }).select().single();
-
-        if (st) {
-          newStudent.id = st.id;
-        }
-      } catch (err) {
-        console.error('Error inserting to Supabase:', err);
+    try {
+      const res = await fetch('/api/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        newStudent.id = json.data.id;
       }
+    } catch (err) {
+      console.error('Error inserting student to Supabase:', err);
     }
 
     setStudents([newStudent, ...students]);

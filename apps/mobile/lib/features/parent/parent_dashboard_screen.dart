@@ -149,7 +149,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Row(
-                      mainAxisAlignment: MainAxisAlignment.between,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('First Term Exam Performance', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                         Text('Report Card Available', style: TextStyle(color: Color(0xFF2563EB), fontSize: 11, fontWeight: FontWeight.bold)),
@@ -178,7 +178,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.between,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

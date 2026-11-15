@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Bell, Plus, CheckCircle, AlertTriangle, Send } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bell, Plus, CheckCircle, AlertTriangle, Send, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input';
 
 export default function NoticesPage() {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const [newNotice, setNewNotice] = useState({
     title: '',
     content: '',
@@ -16,7 +19,7 @@ export default function NoticesPage() {
     priority: 'normal',
   });
 
-  const [notices, setNotices] = useState([
+  const [notices, setNotices] = useState<any[]>([
     {
       id: '1',
       title: 'First Term Examination 2026 Schedule Published',
@@ -37,20 +40,45 @@ export default function NoticesPage() {
     },
   ]);
 
-  const handleCreateNotice = (e: React.FormEvent) => {
+  const fetchNotices = async () => {
+    try {
+      const res = await fetch('/api/notices');
+      const json = await res.json();
+      if (json.success && json.data && json.data.length > 0) {
+        setNotices(json.data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotices();
+  }, []);
+
+  const handleCreateNotice = async (e: React.FormEvent) => {
     e.preventDefault();
-    const created = {
-      id: String(Date.now()),
-      title: newNotice.title,
-      content: newNotice.content,
-      targetAudience: newNotice.targetAudience,
-      priority: newNotice.priority,
-      created_at: new Date().toISOString().split('T')[0],
-      is_published: true,
-    };
-    setNotices([created, ...notices]);
-    setShowAddModal(false);
-    setNewNotice({ title: '', content: '', targetAudience: 'all', priority: 'normal' });
+    setLoading(true);
+    setSuccessMsg(null);
+    try {
+      const res = await fetch('/api/notices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newNotice),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setNotices([json.data, ...notices]);
+        setShowAddModal(false);
+        setNewNotice({ title: '', content: '', targetAudience: 'all', priority: 'normal' });
+        setSuccessMsg('নোটিশ সফলভাবে প্রকাশিত হয়েছে এবং ওয়েবসাইট ও মোবাইল APK ড্যাশবোর্ডে সাথে সাথে লাইভ সিঙ্ক হয়েছে!');
+        setTimeout(() => setSuccessMsg(null), 5000);
+      }
+    } catch (e: any) {
+      alert(`Error: ${e.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
