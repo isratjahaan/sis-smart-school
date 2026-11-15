@@ -94,7 +94,7 @@ export default function TeachersPage() {
           <Card key={t.id} className="hover:shadow-md transition">
             <CardHeader className="flex flex-row items-center space-x-4 pb-3">
               <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-base">
-                {t.name.split(' ').map((n) => n[0]).join('')}
+                {t.name.split(' ').map((n: string) => n[0]).join('')}
               </div>
               <div>
                 <CardTitle className="text-base">{t.name}</CardTitle>
