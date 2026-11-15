@@ -90,7 +90,13 @@ const defaultNotices = [
   },
 ];
 
-export const dynamic = 'force-dynamic';
+export function generateStaticParams() {
+  return [
+    { slug: 'sas-smart-school' },
+    { slug: 'sas' },
+    { slug: 'dhaka-model' },
+  ];
+}
 
 export default async function SchoolPublicPage({
   params,

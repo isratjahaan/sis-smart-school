@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
   reactStrictMode: true,
   transpilePackages: [
     '@sis/shared-types',
@@ -7,14 +11,6 @@ const nextConfig = {
     '@sis/api-contracts',
     '@sis/design-tokens',
   ],
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-  },
 };
 
 export default nextConfig;

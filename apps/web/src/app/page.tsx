@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import SchoolPublicPage from './school/[slug]/page';
 
-export default function RootHomePage() {
-  redirect('/school/sas-smart-school');
+export default async function RootHomePage() {
+  return <SchoolPublicPage params={Promise.resolve({ slug: 'sas-smart-school' })} />;
 }
